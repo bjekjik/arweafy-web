@@ -1,4 +1,4 @@
-import { ADD_SONGS, REMOVE_SONGS } from '../actions';
+import { ADD_SONGS, REMOVE_SONGS, REMOVE_ALL_SONGS } from '../actions';
 
 export default (state = [], action) => {
   switch (action.type) {
@@ -8,6 +8,9 @@ export default (state = [], action) => {
     case REMOVE_SONGS: {
       return state.filter((song, index) => index !== action.id);
     }
+    case REMOVE_ALL_SONGS: {
+      return [];
+    }    
     default: {
       return state;
     }

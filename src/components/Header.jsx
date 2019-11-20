@@ -17,7 +17,7 @@ import PlayListIcon from '@material-ui/icons/List';
 import HomeIcon from '@material-ui/icons/Home';
 import SettingsIcon from '@material-ui/icons/CloudUpload';
 import {
-  removeSong, addSongs, addJwk, HOME_PAGE, SETTINGS_PAGE, NOW_PLAYING_PAGE, PLAYLIST_PAGE,
+  removeAllSong, addSongs, addJwk, HOME_PAGE, SETTINGS_PAGE, NOW_PLAYING_PAGE, PLAYLIST_PAGE,
 } from '../actions';
 
 import {getAudios} from "../utils/arweave";
@@ -26,7 +26,7 @@ const mapDispatchToProps = dispatch => ({
   openPage: type => dispatch({ type }),
   addJwk: jwk => dispatch(addJwk(jwk)),
   addSongs: songs => dispatch(addSongs(songs)),
-  removeSong: activeSong => dispatch(removeSong(activeSong)),
+  removeAllSong: activeSong => dispatch(removeAllSong(activeSong)),
 });
 
 const menuOptions = [
@@ -69,9 +69,7 @@ class Header extends Component {
     let key = JSON.parse(await loadWallet(file));
     let x = await getAudios(key);
     this.props.addJwk(key);
-    for (let i=0;i< this.props.songs.length;i++){
-      this.props.removeSong(i)
-    }
+    this.props.removeAllSong(0)
     this.props.addSongs(x);
   }
   clickWallet = () => {

@@ -1,4 +1,5 @@
 import Arweave from 'arweave/web';
+import SimpleCrypto from "simple-crypto-js";
 
 const arweave = Arweave.init();
 
@@ -6,10 +7,18 @@ const TAG_KEY = "Content-Type" ;
 const TAG_VALUE = "audio" ;
 
 const APP_NAME_KEY = "App-Name";
-const APP_NAME = "musicplayer2";
+const APP_NAME = "musicplayer3";
 
 let CURRENT_SONG_IDS = [];
 
+const encrypt_file = (base64, jwk) => {
+    const simpleCrypto = new SimpleCrypto(JSON.stringify(jwk));
+    return simpleCrypto.encrypt(base64);
+}
+const decrypt_file = (encrypted_txt, jwk) => {
+    const simpleCrypto = new SimpleCrypto(JSON.stringify(jwk));
+    return simpleCrypto.decrypt(encrypted_txt);
+}
 function dataURLtoFile(dataurl, filename) {
     var arr = dataurl.split(','),
         mime = arr[0].match(/:(.*?);/)[1],
@@ -67,7 +76,7 @@ export const getAudios = async (jwk) => {
         let x = await Promise.all(await song_ids.map( async (id) => {
             const transaction = await arweave.transactions.get(id);
             var o = JSON.parse(transaction.get('data', {decode: true, string: true}));
-            return dataURLtoFile(o.base64, o.name);
+            return dataURLtoFile(decrypt_file(o.base64, jwk), o.name);
         }));
         return x;
     }else{
@@ -100,7 +109,7 @@ export const uploadMusic = async (files, n, txs, jwk) => {
         let result = (await readAudio(file)).target.result;
         let transaction = await arweave.createTransaction({
             data: JSON.stringify({
-                base64: result,
+                base64: encrypt_file(result, jwk),
                 name: file.name,
                 size: file.size,
                 lastModified: file.lastModified,

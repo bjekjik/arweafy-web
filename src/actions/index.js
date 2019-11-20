@@ -2,6 +2,7 @@ import mediaSession from '../utils/media-session';
 
 export const ADD_SONGS = 'ADD_SONGS';
 export const REMOVE_SONGS = 'REMOVE_SONGS';
+export const REMOVE_ALL_SONGS = 'REMOVE_ALL_SONGS';
 export const TOGGLE_PLAYING = 'TOGGLE_PLAYING';
 export const FILTER_SONGS = 'FILTER_SONGS';
 export const PLAY_SONG = 'PLAY_SONG';
@@ -21,6 +22,10 @@ export const addSongs = songs => ({
 
 export const removeSong = id => ({
   type: REMOVE_SONGS,
+  id,
+});
+export const removeAllSong = id => ({
+  type: REMOVE_ALL_SONGS,
   id,
 });
 
