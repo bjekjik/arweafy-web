@@ -59,16 +59,20 @@ export const removeAudio = async (index, jwk) => {
 }
 export const getAudios = async (jwk) => {
     const txids = await arweave.arql(await arql(jwk));
-    const main_transaction = await arweave.transactions.get(txids[0]);
-    var song_ids = JSON.parse(main_transaction.get('data', {decode: true, string: true}));
-    CURRENT_SONG_IDS = song_ids;
-    
-    let x = await Promise.all(await song_ids.map( async (id) => {
-        const transaction = await arweave.transactions.get(id);
-        var o = JSON.parse(transaction.get('data', {decode: true, string: true}));
-        return dataURLtoFile(o.base64, o.name);
-    }));
-    return x;
+    if(txids.length > 0){
+        const main_transaction = await arweave.transactions.get(txids[0]);
+        var song_ids = JSON.parse(main_transaction.get('data', {decode: true, string: true}));
+        CURRENT_SONG_IDS = song_ids;
+
+        let x = await Promise.all(await song_ids.map( async (id) => {
+            const transaction = await arweave.transactions.get(id);
+            var o = JSON.parse(transaction.get('data', {decode: true, string: true}));
+            return dataURLtoFile(o.base64, o.name);
+        }));
+        return x;
+    }else{
+        return [];
+    }
 }
 export const uploadMusics = async (files, jwk) => {
     let txs = [];

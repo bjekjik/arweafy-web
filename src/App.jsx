@@ -166,6 +166,7 @@ class App extends Component {
       <>
         <Header
           playState={playState}
+          songs={songs}
           addToHomeScreenUIVisible={addToHomeScreenUIVisible}
           playingSong={songs[playState.songId]}
           openSnackbar={() => this.setState({ snackBarOpen: true })}
